@@ -1,6 +1,19 @@
 import { Github, Linkedin } from "lucide-react";
 
-function Hero({data}) {
+function Hero({ data }) {
+  if (!data) return null;
+
+  const rawImage = data.profileImage || "./profile.png";
+  const imageSrc =
+    rawImage.startsWith("/") && !rawImage.startsWith("//")
+      ? `${import.meta.env.BASE_URL}${rawImage.slice(1)}`
+      : rawImage;
+
+  const githubUrl =
+    data.socials?.github || data.socials?.Github || "https://github.com/";
+  const linkedinUrl =
+    data.socials?.linkedin || data.socials?.Linkedin || "https://linkedin.com/";
+
   return (
     <section id="home" className="hero">
       <div className="glow glow-purple"></div>
@@ -8,20 +21,47 @@ function Hero({data}) {
 
       <div className="container hero-inner">
         <div>
-          <p className="hero-greeting">Hi, I am {data.name}</p>
-          <h1 className="hero-title gradient-text">{data.role}</h1>
-          <p className="hero-text">{data.tagline}</p>
+          <p className="hero-greeting">Hi, I am {data.name || "Student Name"}</p>
+          <h1 className="hero-title gradient-text">{data.role || "Aspiring Developer"}</h1>
+          <p className="hero-text">{data.tagline || "Building modern web experiences with React."}</p>
 
-          <a href="#projects"className="btn btn-primary">Explore My Work</a>
+          <a href="#projects" className="btn btn-primary">Explore my work</a>
 
           <div className="social-icons">
-            <a className="icon-link" href={data.socials.github}><Github size={20} /></a>
-            <a className="icon-link" href={data.socials.Linkedin}><Linkedin size={20} /></a>
+            {githubUrl && (
+              <a
+                className="icon-link"
+                href={githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub Profile"
+              >
+                <Github size={20} />
+              </a>
+            )}
+            {linkedinUrl && (
+              <a
+                className="icon-link"
+                href={linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn Profile"
+              >
+                <Linkedin size={20} />
+              </a>
+            )}
           </div>
         </div>
 
         <div className="hero-photo">
-          <img src={data.profileImage} alt={data.name} />
+          <img
+            src={imageSrc}
+            alt={data.name || "Student Profile Photo"}
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = "./profile.png";
+            }}
+          />
         </div>
       </div>
     </section>
