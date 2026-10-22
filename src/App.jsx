@@ -7,6 +7,7 @@ import Education from "./components/Education.jsx";
 import Contact from "./components/Contact.jsx";
 import Footer from "./components/Footer.jsx";
 import { useEffect, useState } from "react";
+import defaultData from "../public/portfolio.json";
 
 function App() {
   const [data, setData] = useState(null);
@@ -44,9 +45,14 @@ function App() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Unable to load portfolio.json:", err);
-        setError(true);
-        setLoading(false);
+        console.warn("Unable to fetch portfolio.json, using bundled data fallback:", err);
+        if (defaultData) {
+          setData(defaultData);
+          setLoading(false);
+        } else {
+          setError(true);
+          setLoading(false);
+        }
       });
   }, []);
 
