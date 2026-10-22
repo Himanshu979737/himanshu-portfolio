@@ -10,8 +10,9 @@ import { useEffect, useState } from "react";
 import defaultData from "../public/portfolio.json";
 
 function App() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Initialize directly with defaultData so the student profile displays instantly
+  const [data, setData] = useState(defaultData);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -45,7 +46,7 @@ function App() {
         setLoading(false);
       })
       .catch((err) => {
-        console.warn("Unable to fetch portfolio.json, using bundled data fallback:", err);
+        console.warn("Unable to fetch external portfolio.json, using bundled data fallback:", err);
         if (defaultData) {
           setData(defaultData);
           setLoading(false);
@@ -56,26 +57,26 @@ function App() {
       });
   }, []);
 
-  if (loading) {
+  if (loading && !data) {
     return <p className="status">Loading Portfolio...</p>;
   }
 
-  if (error || !data) {
+  if (error && !data) {
     return <p className="status">Unable to load portfolio data.</p>;
   }
 
   return (
     <>
-      <Navbar name={data.name} />
+      <Navbar name={data?.name} />
       <main>
         <Hero data={data} />
         <About data={data} />
-        <Skills skills={data.skills} />
-        <Projects projects={data.projects} />
-        <Education education={data.education} />
-        <Contact email={data.email} socials={data.socials} />
+        <Skills skills={data?.skills} />
+        <Projects projects={data?.projects} />
+        <Education education={data?.education} />
+        <Contact email={data?.email} socials={data?.socials} />
       </main>
-      <Footer name={data.name} socials={data.socials} />
+      <Footer name={data?.name} socials={data?.socials} />
     </>
   );
 }

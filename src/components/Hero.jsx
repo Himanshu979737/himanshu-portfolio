@@ -1,13 +1,14 @@
 import { Github, Linkedin } from "lucide-react";
+import defaultProfileImg from "../assets/profile.png";
 
 function Hero({ data }) {
   if (!data) return null;
 
-  const rawImage = data.profileImage || "./profile.png";
+  // Prefer external image URLs if provided, otherwise use the bundled profile image
   const imageSrc =
-    rawImage.startsWith("/") && !rawImage.startsWith("//")
-      ? `${import.meta.env.BASE_URL}${rawImage.slice(1)}`
-      : rawImage;
+    data.profileImage && (data.profileImage.startsWith("http://") || data.profileImage.startsWith("https://"))
+      ? data.profileImage
+      : defaultProfileImg;
 
   const githubUrl =
     data.socials?.github || data.socials?.Github || "https://github.com/";
@@ -59,7 +60,7 @@ function Hero({ data }) {
             alt={data.name || "Student Profile Photo"}
             onError={(e) => {
               e.currentTarget.onerror = null;
-              e.currentTarget.src = "./profile.png";
+              e.currentTarget.src = defaultProfileImg;
             }}
           />
         </div>
